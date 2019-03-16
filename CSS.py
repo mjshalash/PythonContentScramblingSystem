@@ -18,9 +18,13 @@ class ContentScramblingSystem:
         bit_str_25 = ''
         bit_str_17 = ''
 
+        # 25-bit LSFR
+        # zfill appends 0's to left of string until 8 is total number of bits
         for b in byte_array_25:
             bit_str_25 += (str(bin(b)[2:].zfill(8)))
 
+        # 17-bit LSFR
+        # zfill appends 0's to left of string until 8 is total number of bits
         for b in byte_array_17:
             bit_str_17 += (str(bin(b)[2:].zfill(8)))
 
@@ -160,9 +164,12 @@ class ContentScramblingSystemImplementation:
 
 
 
+# Test Encryption
+# cssi = ContentScramblingSystemImplementation("abc", "12", "encryptTest.txt", "decryptTest.txt")
 
-# cssi = ContentScramblingSystemImplementation("abc", "12", "CECS 564/ArtOfWar.txt", "CECS 564/ENCRYPT_OUTPUT.txt")
-cssi = ContentScramblingSystemImplementation("abc", "12", "CECS 564/ENCRYPT_OUTPUT.txt", "CECS 564/DECRYPT_OUTPUT.txt")
+# Test Decryption
+cssi = ContentScramblingSystemImplementation("abc", "12", "decryptTest.txt", "encryptTest.txt")
+
 cssi.do_css()
 
 print()
