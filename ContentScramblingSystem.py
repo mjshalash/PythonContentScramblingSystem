@@ -48,8 +48,6 @@ class ContentScramblingSystem:
         # Note: MSB -> LSB
         return
 
-
-
     def rotate_set_25(self):
         # print(self.set_25)
         xor_count = 0
@@ -71,7 +69,6 @@ class ContentScramblingSystem:
 
         return xor_count
 
-
     def rotate_set_17(self):
         # print(self.set_17)
         xor_count = 0
@@ -92,8 +89,6 @@ class ContentScramblingSystem:
 
         return xor_count
 
-
-
     def get_next_bytes(self):
         set_25_bytes = []
         set_17_bytes = []
@@ -112,69 +107,7 @@ class ContentScramblingSystem:
         addition = addition % 256
         return addition
 
-
-
     def get_next_sum(self):
         next_bytes = self.get_next_bytes()
         return self.full_adder(next_bytes[0], next_bytes[1])
-
-
-
-
-
-class ContentScramblingSystemImplementation:
-    
-    # Define the initial class
-    def __init__(self, init_1, init_2, file_name, output_name):
-        
-        # Establish Class Variables for Content Scrambling System Implementation
-        self.css = ContentScramblingSystem(init_1, init_2)  # CSS
-        self.file_name = file_name                          # File to read in
-        self.output_name = output_name                      # File to write out to
-        self.byte_size = (int(os.stat(file_name).st_size))  
-
-
-    # Carry out the computation
-    def do_css(self):
-        progress_print_counter = 0
-        progress_counter = 0
-        piece_size = 1
-        
-        # Read input file as a raw bytestream, Write to output file with a raw bytestream
-        with open(self.file_name, "rb") as in_file, open(self.output_name, "wb") as out_file:
-            while True:
-                piece = in_file.read(piece_size)
-                if piece == b"":
-                    break
-
-                piece_int = ord(piece)
-                next_xor_byte = self.css.get_next_sum()
-                write_int = piece_int ^ next_xor_byte
-                write_byte = write_int.to_bytes(1, byteorder="big")
-
-
-                out_file.write(write_byte)
-                progress_counter += 1
-                progress = (progress_counter / self.byte_size) * 100
-
-                if progress // 10 > progress_print_counter:
-                    print(str(progress) + " % Done")
-                    progress_print_counter += 1
-
-
-
-
-# Test Encryption
-# cssi = ContentScramblingSystemImplementation("abc", "12", "encryptTest.txt", "decryptTest.txt")
-
-# Test Decryption
-cssi = ContentScramblingSystemImplementation("abc", "12", "decryptTest.txt", "encryptTest.txt")
-
-cssi.do_css()
-
-print()
-
-
-
-
 
