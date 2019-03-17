@@ -3,10 +3,10 @@ import os, ContentScramblingSystem
 class test:
     
     # Constructor for ContentScramblingImplementation
-    def __init__(self, init_1, init_2, file_name, output_name):
+    def __init__(self, seedOne, seedTwo, file_name, output_name):
        
         # Create class for Content Scrambling System
-        self.css = ContentScramblingSystem.ContentScramblingSystem(init_1, init_2)  # CSS
+        self.css = ContentScramblingSystem.ContentScramblingSystem(seedOne, seedTwo)  # CSS
         
         # File to read data from
         self.file_name = file_name 
@@ -44,6 +44,8 @@ class test:
 
 # Test Encryption (to test decryption, switch files)
 # Create instance of test class
+# Initialized with a "three" byte seed for 25-bit LSFR
+# Initialized with a "two" byte seed for 17-bit LSFR
 cssi = test("abc", "12", "encryptTest.txt", "decryptTest.txt")
 
 # Run Content Scrambling System
