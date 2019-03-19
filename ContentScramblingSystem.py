@@ -2,126 +2,130 @@ import os
 
 class ContentScramblingSystem:
     #Initialize "blank" array of 25 bits
-    LSFR_25 = [None]*25
+    lsfr25 = [None]*25
 
     #Initialize "blank" array of 17 bits
-    LSFR_17 = [None]*17
+    lsfr17 = [None]*17
+
 
     poly_25 = [15, 5, 4, 1]
     poly_17 = [15, 1]
-    carry = 0
+    additionCarry = 0
 
     # "Constructor" for Content Scrambling System Class
     def __init__(self, seedOne, seedTwo):
 
         # Returns immutable sequence of integers corresponding to each LSFR
-        byte_array_25 = bytes(seedOne, 'utf-8')
-        byte_array_17 = bytes(seedTwo, 'utf-8')
+        seedOneBytes = bytes(seedOne, 'utf-8')
+        seedTwoBytes = bytes(seedTwo, 'utf-8')
 
-        print("byte_array_17 is: ", byte_array_17)
+        print("byte_array_17 is: ", seedTwoBytes)
         
-        # Strings to represent bit strings for each LSFR
-        bit_str_25 = ''
-        bit_str_17 = ''
+        # Strings to represent bit strings for each LSFR seed
+        seedOneBitString = ''
+        seedTwoBitString = ''
 
         # 25-bit LSFR
         # Convert initial three-byte seed into bits
-        for b in byte_array_25:
-            bit_str_25 += (str(bin(b)[2:].zfill(8)))
+        for b in seedOneBytes:
+            seedOneBitString += (str(bin(b)[2:].zfill(8)))
 
         # 17-bit LSFR
         # Convert initial two-byte seed into bits
-        for b in byte_array_17:
-            bit_str_17 += (str(bin(b)[2:].zfill(8)))
-            print("bit_str_17 is: ", bit_str_17)
+        for b in seedTwoBytes:
+            seedTwoBitString += (str(bin(b)[2:].zfill(8)))
+            print("bit_str_17 is: ", seedTwoBitString)
 
-        # Append 1 into fourth bit
-        self.LSFR_25[0:21] = bit_str_25[0:21]
-        self.LSFR_25[21] = "1"
-        self.LSFR_25[22:25] = bit_str_25[21:24]
+        # Append 1 into fourth bit to prevent null cycle
+        self.lsfr25[0:21] = seedOneBitString[0:21]
+        self.lsfr25[21] = "1"
+        self.lsfr25[22:25] = seedOneBitString[21:24]
         
-        # Append 1 into fourth bit
-        self.LSFR_17[0:13] = bit_str_17[0:13]
-        self.LSFR_17[13] = "1"
-        self.LSFR_17[14:17] = bit_str_17[13:16]
+        # Append 1 into fourth bit to prevent null cycle
+        self.lsfr17[0:13] = seedTwoBitString[0:13]
+        self.lsfr17[13] = "1"
+        self.lsfr17[14:17] = seedTwoBitString[13:16]
 
-        print("LSFR_17 after appending: ", self.LSFR_17)
+        print("lsfr17 after appending: ", self.lsfr17)
 
         # Convert each element in 17-bit LSFR array to a string
         for i in range(17):
-            self.LSFR_17[i] = int(self.LSFR_17[i])
+            self.lsfr17[i] = int(self.lsfr17[i])
 
         # Convert each element in 25-bit LSFR array to a string
         for i in range(25):
-            self.LSFR_25[i] = int(self.LSFR_25[i])
+            self.lsfr25[i] = int(self.lsfr25[i])
 
-        # Note: MSB -> LSB
         return
 
     def rotate_set_25(self):
         
-        # print(self.LSFR_25)
+        # print(self.lsfr25)
         xor_count = 0
 
         for i in self.poly_25:
             # if (i + 1) in self.poly_25:
-            current_bit = int(self.LSFR_25[25 - i])
+            current_bit = int(self.lsfr25[25 - i])
             if current_bit == 1:
                 xor_count += 1
 
         xor_count = xor_count % 2
 
         for i in reversed(range(1,25)):
-            self.LSFR_25[i] = self.LSFR_25[i - 1]
+            self.lsfr25[i] = self.lsfr25[i - 1]
 
-        self.LSFR_25[0] = xor_count
+        self.lsfr25[0] = xor_count
 
-        # print(self.LSFR_25)
+        # print(self.lsfr25)
 
         return xor_count
 
     def rotate_set_17(self):
-        # print(self.LSFR_17)
+        # print(self.lsfr17)
         xor_count = 0
 
         for i in self.poly_17:
             # if (i + 1) in self.poly_25:
-            current_bit = int(self.LSFR_17[17 - i])
+            current_bit = int(self.lsfr17[17 - i])
             if current_bit == 1:
                 xor_count += 1
 
         xor_count = xor_count % 2
 
         for i in reversed(range(1, 17)):
-            self.LSFR_17[i] = self.LSFR_17[i - 1]
+            self.lsfr17[i] = self.lsfr17[i - 1]
 
-        self.LSFR_17[0] = xor_count
+        self.lsfr17[0] = xor_count
 
         return xor_count
 
-    def get_next_bytes(self):
-        LSFR_25_bytes = []
-        LSFR_17_bytes = []
+    # Gets next byte from input to "insert" into the LSFRs
+    def refillLSFR(self):
+        lsfr25_bytes = []
+        lsfr17_bytes = []
 
         for i in range(8):
-            LSFR_25_bytes.append(self.rotate_set_25())
-            LSFR_17_bytes.append(self.rotate_set_17())
+            lsfr25_bytes.append(self.rotate_set_25())
+            lsfr17_bytes.append(self.rotate_set_17())
 
-        return LSFR_17_bytes, LSFR_25_bytes
+        return lsfr17_bytes, lsfr25_bytes
 
-    # Function to add the two LSFR bit streams to each other
-    def LSFR_add(self, LSFR_17_bytes, LSFR_25_bytes):
-        LSFR_17_int = int((''.join((map(str, LSFR_17_bytes)))), 2)
-        print(LSFR_17_int)
+    # Function to combine the outputs of both LSFRs
+    def lsfrAdd(self, lsfr17_bytes, lsfr25_bytes):        
+        lsfr17_int = int((''.join((map(str, lsfr17_bytes)))), 2)
+        lsfr25_int = int((''.join((map(str, lsfr25_bytes)))), 2)
         
-        LSFR_25_int = int((''.join((map(str, LSFR_25_bytes)))), 2)
+        # Add two LSFR outputs to retrieve next output byte
+        result = lsfr17_int + lsfr25_int + self.additionCarry
         
-        addition = LSFR_17_int + LSFR_25_int + self.carry
-        self.carry = addition // 256
-        addition = addition % 256
-        return addition
+        # Establish additionCarry to be used in addition for next output byte
+        self.additionCarry = result // 256
+        result = result % 256
 
-    def get_next_sum(self):
-        next_bytes = self.get_next_bytes()
-        return self.LSFR_add(next_bytes[0], next_bytes[1])
+        # Return the newly found output byte
+        return result
+
+    def getOutputByte(self):
+        next_bytes = self.refillLSFR()
+        return self.lsfrAdd(next_bytes[0], next_bytes[1])
 

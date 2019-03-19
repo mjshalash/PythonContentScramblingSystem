@@ -25,20 +25,33 @@ class test:
         
         # Read input file as a raw bytestream
         # Write to output file with a raw bytestream
-        with open(self.file_name, "rb") as in_file, open(self.output_name, "wb") as out_file:
+        with open(self.file_name, "rb") as fileInput, open(self.output_name, "wb") as fileOutput:
             
             while True:
-                piece = in_file.read(piece_size)
-                
+
+                # Read in 1 byte from file aka one character
+                piece = fileInput.read(piece_size)
+
+                # If at end
                 if piece == b"":
                     break
 
+                # Retrieve ascii value for first byte
                 piece_int = ord(piece)
-                next_xor_byte = self.css.get_next_sum()
+                
+                # Use Content Scrambling System to generate random bit stream
+                next_xor_byte = self.css.getOutputByte()
+                
+                # Binary XOR the byte/character with output byte of Content Scrambling System
+                # ^ is Binary XOR
                 write_int = piece_int ^ next_xor_byte
+
+                # Create array of bytes representing final output
+                # MSB is at beginning of byte arrary
                 write_byte = write_int.to_bytes(1, byteorder="big")
 
-                out_file.write(write_byte)
+                # Write encrypted byte to the specified output file
+                fileOutput.write(write_byte)
 
 
 
