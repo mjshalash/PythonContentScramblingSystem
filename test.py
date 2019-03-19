@@ -2,7 +2,7 @@ import os, ContentScramblingSystem
 
 class test:
     
-    # Constructor for ContentScramblingImplementation
+    # Constructor for test.py
     def __init__(self, seedOne, seedTwo, file_name, output_name):
        
         # Create class for Content Scrambling System
@@ -56,10 +56,18 @@ class test:
 
 
 # Test Encryption (to test decryption, switch files)
+
+# Ask user to input two seeds
+# One will be three characters for the 25-bit LSFR
+# One will be two characters for the 17-bit LSFR
+seedOne = input("Please enter in length-three seed for 25-bit LSFR (i.e \"abc\", \"EUO\", etc.\):");
+seedTwo = input("Please enter in length-two seed for 17-bit LSFR (i.e \"12\", \"25\", etc.\):");
+
 # Create instance of test class
 # Initialized with a "three" byte seed for 25-bit LSFR
 # Initialized with a "two" byte seed for 17-bit LSFR
-cssi = test("abc", "12", "encryptTest.txt", "decryptTest.txt")
+cssi = test(seedOne, seedTwo, "encryptTest.txt", "decryptTest.txt");
+cssi = test(seedOne, seedTwo, "decryptTest.txt", "encryptTest.txt");
 
 # Run Content Scrambling System
 cssi.compute()

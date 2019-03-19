@@ -48,11 +48,11 @@ class ContentScramblingSystem:
 
         print("lsfr17 after appending: ", self.lsfr17)
 
-        # Convert each element in 17-bit LSFR array to a string
+        # Convert each element in 17-bit LSFR array to a integer
         for i in range(17):
             self.lsfr17[i] = int(self.lsfr17[i])
 
-        # Convert each element in 25-bit LSFR array to a string
+        # Convert each element in 25-bit LSFR array to a integer
         for i in range(25):
             self.lsfr25[i] = int(self.lsfr25[i])
 
