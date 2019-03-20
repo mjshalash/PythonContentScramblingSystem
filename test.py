@@ -6,8 +6,8 @@ def main():
     # TODO: Have use decide whether they want to encrypt message or decrypt message
 
     # Files to read and write to
-    fileIn = open("encryptTest.txt", "rb")
-    fileOut = open("decryptTest.txt", "wb")
+    fileIn = open("decryptTest.txt", "rb")
+    fileOut = open("encryptTest.txt", "wb")
 
     # User determines two seeds for each LSFR (one three characters, the other two characters)
     seedOne = input(

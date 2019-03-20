@@ -62,7 +62,7 @@ class ContentScramblingSystem:
         xor = 0
 
         for i in self.taps25:
-            current_bit = int(self.lsfr25[25 - i])
+            current_bit = int(self.lsfr25[24 - i])
             if current_bit == 1:
                 xor += 1
 
@@ -79,7 +79,7 @@ class ContentScramblingSystem:
         xor = 0
 
         for i in self.taps17:
-            current_bit = int(self.lsfr17[17 - i])
+            current_bit = int(self.lsfr17[16 - i])
 
             if current_bit == 1:
                 xor += 1
