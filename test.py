@@ -6,8 +6,8 @@ def main():
     # TODO: Have use decide whether they want to encrypt message or decrypt message
 
     # Files to read and write to
-    fileIn = open("decryptTest.txt", "rb")
-    fileOut = open("encryptTest.txt", "wb")
+    fileIn = open("encryptTest.txt", "rb")
+    fileOut = open("decryptTest.txt", "wb")
 
     # User determines two seeds for each LSFR (one three characters, the other two characters)
     seedOne = input(
@@ -33,11 +33,11 @@ def main():
         inputCharAscii = ord(inputChar)
 
         # Use Content Scrambling System to generate random bit stream (byte)
-        lsfrResult = cryptoSystem.getOutputByte()
+        lfsrResult = cryptoSystem.getOutputByte()
 
         # Binary XOR the byte/character with output byte of Content Scrambling System
         # ^ is Binary XOR
-        toWriteAscii = inputCharAscii ^ lsfrResult
+        toWriteAscii = inputCharAscii ^ lfsrResult
 
         # Create array of bytes representing final output
         # MSB is at beginning of byte arrary

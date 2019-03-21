@@ -54,9 +54,9 @@ class ContentScramblingSystem:
 
         return
 
-    # "Rotate" 25-bit lsfr, establish new MSB and return this same value as part of our output byte
+    # "Rotate" 25-bit lfsr, establish new MSB and return this same value as part of our output byte
     # C2(X) => taps => [15, 5, 4, 1, 0]
-    def rotate_set_25(self):
+    def shiftRegister25(self):
 
         # Bits to be XOR'd
         xBitOne = 0
@@ -88,9 +88,9 @@ class ContentScramblingSystem:
         # Return next bit to append to output byte
         return tappedXorOutput
 
-    # "Rotate" 17-bit lsfr, establish new MSB and return this same value as part of our output byte
+    # "Rotate" 17-bit lfsr, establish new MSB and return this same value as part of our output byte
     # C(x) => taps => [15, 1, 0]
-    def rotate_set_17(self):
+    def shiftRegister17(self):
 
         # Bits to be XOR'd
         xBitOne = 0
@@ -127,14 +127,14 @@ class ContentScramblingSystem:
 
         # Generate 8-bit output byte from respective LFSR
         for i in range(8):
-            lfsr25OutputByte.append(self.rotate_set_25())
-            lfsr17OutputByte.append(self.rotate_set_17())
+            lfsr25OutputByte.append(self.shiftRegister25())
+            lfsr17OutputByte.append(self.shiftRegister17())
 
         # Return the two output bytes
         return lfsr17OutputByte, lfsr25OutputByte
 
     # Function to combine the outputs of both LSFRs
-    def lsfrAdd(self, lfsr17OutputByte, lfsr25OutputByte):
+    def lfsrAdd(self, lfsr17OutputByte, lfsr25OutputByte):
         lfsr17Int = int((''.join((map(str, lfsr17OutputByte)))), 2)
         lfsr25Int = int((''.join((map(str, lfsr25OutputByte)))), 2)
 
@@ -156,4 +156,4 @@ class ContentScramblingSystem:
 
         # Combine the two output bytes utilizing 8-bit addition
         # Value returned to test.py for further processing
-        return self.lsfrAdd(nextBytes[0], nextBytes[1])
+        return self.lfsrAdd(nextBytes[0], nextBytes[1])
