@@ -57,41 +57,62 @@ class ContentScramblingSystem:
 
         return
 
+    # "Rotate" 25-bit lsfr, establish new MSB and return this same value as part of our output byte
     def rotate_set_25(self):
 
-        xor = 0
+        tappedXorOutput = 0
 
+        # For each order in polynomial
         for i in self.taps25:
+
+            # Find correct bit to xor
             current_bit = int(self.lsfr25[24 - i])
+
+            # If the correct bit is 1, add to xor bit count
             if current_bit == 1:
-                xor += 1
+                tappedXorOutput += 1
 
-        xor = xor % 2
+        # If the xor bit count is even then the returned result will be 0
+        # Otherwise, it will be 1
+        tappedXorOutput = tappedXorOutput % 2
 
+        # Shift bits to the right to make room for new MSB
         for i in reversed(range(1, 25)):
             self.lsfr25[i] = self.lsfr25[i - 1]
 
-        self.lsfr25[0] = xor
+        # Set new MSB
+        self.lsfr25[0] = tappedXorOutput
 
-        return xor
+        # Return next bit to append to output byte
+        return tappedXorOutput
 
+    # "Rotate" 17-bit lsfr, establish new MSB and return this same value as part of our output byte
     def rotate_set_17(self):
-        xor = 0
 
+        tappedXorOutput = 0
+
+        # For each order in polynomial
         for i in self.taps17:
+            # Find correct bit to xor
             current_bit = int(self.lsfr17[16 - i])
 
+            # If the correct bit is 1, add to xor bit count
             if current_bit == 1:
-                xor += 1
+                tappedXorOutput += 1
 
-        xor = xor % 2
+        # If the xor bit count is even then the returned result will be 0
+        # Otherwise, it will be 1
+        tappedXorOutput = tappedXorOutput % 2
 
+        # Shift bits to the right to make room for new MSB
         for i in reversed(range(1, 17)):
             self.lsfr17[i] = self.lsfr17[i - 1]
 
-        self.lsfr17[0] = xor
+        # Set new MSB
+        self.lsfr17[0] = tappedXorOutput
 
-        return xor
+        # Return next bit to append to output byte
+        return tappedXorOutput
 
     # Gets next byte from input to "insert" into the LSFRs
     def refillLSFR(self):
